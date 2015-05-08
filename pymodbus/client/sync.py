@@ -349,7 +349,11 @@ class ModbusSerialClient(BaseModbusClient):
         if not self.socket:
             raise ConnectionException(self.__str__())
         if request:
-            return self.socket.write(request)
+            n = self.socket.write(request)
+            if _logger.isEnabledFor(logging.DEBUG):
+                _logger.debug("   written %d bytes" % n)
+                _logger.debug(" ".join([hex(ord(x)) for x in request]))
+            return n
         return 0
 
     def _recv(self, size):
@@ -360,7 +364,11 @@ class ModbusSerialClient(BaseModbusClient):
         '''
         if not self.socket:
             raise ConnectionException(self.__str__())
-        return self.socket.read(size)
+        
+        rd = self.socket.read(size)
+        if _logger.isEnabledFor(logging.DEBUG):
+            _logger.debug(" ".join([hex(ord(x)) for x in rd]) )
+        return rd
 
     def __str__(self):
         ''' Builds a string representation of the connection
