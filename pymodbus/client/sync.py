@@ -349,6 +349,7 @@ class ModbusSerialClient(BaseModbusClient):
         if not self.socket:
             raise ConnectionException(self.__str__())
         if request:
+            self.socket.flushInput()
             n = self.socket.write(request)
             if _logger.isEnabledFor(logging.DEBUG):
                 _logger.debug("   written %d bytes" % n)
